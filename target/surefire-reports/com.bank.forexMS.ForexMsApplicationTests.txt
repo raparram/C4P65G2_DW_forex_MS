@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.bank.forexMS.ForexMsApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.919 s - in com.bank.forexMS.ForexMsApplicationTests
