@@ -1,2 +1,2 @@
 # forex_MS
-Miscroservicio Forex para banco desarrollado en Spring Boot dockerizado
+Microservicio Forex para banco desarrollado en Spring Boot dockerizado
