@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,14 +21,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor(onConstructor = @__(
         @Autowired))
 public class TransactionController {
-
+    
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
     private CurrencyExchangeTableRepository CETrepository;
-
+    
     @PostMapping("/transactions")
     Transaction newForexTransaction(@RequestBody Transaction transaction) {
         Account customer = accountRepository.findById(transaction.getUsername()).orElse(null);
@@ -45,17 +46,22 @@ public class TransactionController {
             throw new InvalidTransferException("Divisa " + currency + " no válida. Transacción declinada.");
         }
         if (originAmount < 0) {
-            throw new InvalidTransferException("El monto origen debe ser mayor a cero.");
+            throw new InvalidTransferException("El monto origen debe ser mayor a cero. Transacción declinada.");
         }
         Map<String, Double> customerWallet = customer.getCurrencyWallet();
-        if(customerWallet == null){
-            customerWallet = new HashMap<String, Double>() {};
+        if (customerWallet == null) {
+            customerWallet = new HashMap<String, Double>() {
+            };
         }
         double commission = CETrepository.findFirstByOrderByIdDesc().getCommissionPercentage() / 100;
         double rate = rates.get(currency);
-        double destinationAmount = 0;        
+        double destinationAmount = 0;
+        double cop2user = 0;
+        double cop2bank = 0;
         if (type.equals("compra")) {
             destinationAmount = (originAmount * (1 - commission)) / rate;
+            cop2user = 0;
+            cop2bank = originAmount;
             if (customerWallet.containsKey(currency)) {
                 double currentAmount = customerWallet.get(currency);
                 customerWallet.put(currency, destinationAmount + currentAmount);
@@ -63,15 +69,17 @@ public class TransactionController {
                 customerWallet.put(currency, destinationAmount);
             }
         } else if (type.equals("venta")) {
-            if (customerWallet.containsKey(currency)) {
-                throw new InvalidTransferException("El usuario" + transaction.getUsername() + "no posee fondos en " + currency + ". Transacción declinada.");
+            if (!customerWallet.containsKey(currency)) {
+                throw new InvalidTransferException("El usuario " + transaction.getUsername() + " no posee fondos en " + currency + ". Transacción declinada.");
             }
-            if (customerWallet.get(currency) < originAmount * (1 + commission)) {
-                throw new InvalidTransferException("El usuario" + transaction.getUsername() + " no posee fondos suficientes en " + currency + ". Transacción declinada.");
+            if (customerWallet.get(currency) < originAmount) {
+                throw new InvalidTransferException("El usuario " + transaction.getUsername() + " no posee fondos suficientes en " + currency + ". Transacción declinada.");
             }
-            destinationAmount = (originAmount * (1 - commission)) * rate;
+            destinationAmount = originAmount * rate;
+            cop2user = destinationAmount * (1 - commission);
+            cop2bank = destinationAmount * commission;
             double currentAmount = customerWallet.get(currency);
-            customerWallet.put(currency, currentAmount - destinationAmount);
+            customerWallet.put(currency, currentAmount - originAmount);
         }
         // Transfers to the bank as commissions, these are made in the api gate
         Date today = new Date();
@@ -83,16 +91,27 @@ public class TransactionController {
         transaction.setRate(rate);
         transaction.setDestinationAmount(destinationAmount);
         transaction.setCommissionPercentage(commission * 100); //%
+        transaction.setCop2user(cop2user);
+        transaction.setCop2bank(cop2bank);
         transaction.setDate(today);
         return transactionRepository.save(transaction);
     }
-
-    @GetMapping("/transactions/{username}")
+    
+    @GetMapping("/transactions/user/{username}")
     List<Transaction> costumerTransactionForex(@PathVariable String username) {
         Account customer = accountRepository.findById(username).orElse(null);
         if (customer == null) {
             throw new AccountNotFoundException("El usuario " + username + " no cuenta con divisas extrangeras. Cree primero una cuenta tipo forex. Transacción declinada.");
         }
         return transactionRepository.findByUsername(username);
+    }
+    
+    @GetMapping("/transactions/id/{idTransaction}")
+    Optional<Transaction> idTransactionForex(@PathVariable String idTransaction) {
+        Transaction transaction = transactionRepository.findById(idTransaction).orElse(null);
+        if (transaction == null) {
+            throw new AccountNotFoundException("La transacción " + idTransaction + " no existe.");
+        }
+        return transactionRepository.findById(idTransaction);
     }
 }

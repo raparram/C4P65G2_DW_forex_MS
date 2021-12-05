@@ -49,6 +49,14 @@ public class Transaction {
     @Getter
     @Setter
     private double commissionPercentage;
+    
+    @Getter
+    @Setter
+    private double cop2user;
+    
+    @Getter
+    @Setter
+    private double cop2bank;
 
     @Getter
     @Setter

@@ -6,18 +6,12 @@ package com.bank.forexMS.controllers;
 
 import com.bank.forexMS.models.CurrencyExchangeTable;
 import com.bank.forexMS.repositories.CurrencyExchangeTableRepository;
-import com.bank.forexMS.exceptions.AccountNotFoundException;
 import com.bank.forexMS.exceptions.InvalidCurrencyExchangeTableException;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/forex/")
