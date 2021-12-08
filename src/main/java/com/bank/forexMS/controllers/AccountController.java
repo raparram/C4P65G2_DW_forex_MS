@@ -7,6 +7,7 @@ package com.bank.forexMS.controllers;
 import com.bank.forexMS.models.Account;
 import com.bank.forexMS.repositories.AccountRepository;
 import com.bank.forexMS.exceptions.AccountNotFoundException;
+import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ public class AccountController {
         if(accountRepository.existsById(account.getUsername())){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe una cuenta con ese username. Creación de cuenta forex declinada.");
         }
+        account.setUsdAmount(0);
+        account.setLastChange(new Date());
         return accountRepository.save(account);
     }
 

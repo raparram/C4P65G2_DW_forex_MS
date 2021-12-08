@@ -5,7 +5,6 @@
 package com.bank.forexMS.models;
 
 import java.util.Date;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +32,7 @@ public class CurrencyExchangeTable {
     
     @Getter
     @Setter
-    private Map<String, Double> rates;
+    private double usdRate;
     
     @Getter
     @Setter

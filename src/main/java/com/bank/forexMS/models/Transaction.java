@@ -32,11 +32,7 @@ public class Transaction {
 
     @Getter
     @Setter
-    private String currency;
-
-    @Getter
-    @Setter
-    private double rate;
+    private double usdRate;
 
     @Getter
     @Setter

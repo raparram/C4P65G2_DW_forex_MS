@@ -24,7 +24,7 @@ public class Account {
 
     @Getter
     @Setter
-    private Map<String, Double> currencyWallet;
+    private double usdAmount;
 
     @Getter
     @Setter

@@ -1,1 +1,16 @@
+com\bank\forexMS\exceptions\InvalidTransferException.class
+com\bank\forexMS\models\Transaction.class
+com\bank\forexMS\repositories\AccountRepository.class
+com\bank\forexMS\exceptions\InvalidCurrencyExchangeTableAdvice.class
+com\bank\forexMS\models\Account.class
+com\bank\forexMS\controllers\AccountController.class
+com\bank\forexMS\controllers\TransactionController.class
+com\bank\forexMS\repositories\CurrencyExchangeTableRepository.class
+com\bank\forexMS\exceptions\InvalidCurrencyExchangeTableException.class
+com\bank\forexMS\models\CurrencyExchangeTable.class
+com\bank\forexMS\controllers\CurrencyExchanceTableController.class
+com\bank\forexMS\exceptions\InvalidTransferAdvice.class
+com\bank\forexMS\repositories\TransactionRepository.class
+com\bank\forexMS\exceptions\AccountNotFoundException.class
 com\bank\forexMS\ForexMsApplication.class
+com\bank\forexMS\exceptions\AccountNotFoundAdvice.class

@@ -38,8 +38,8 @@ public class CurrencyExchanceTableController {
             throw new InvalidCurrencyExchangeTableException("Comision no valida.");
         }
 
-        if (table.getRates().isEmpty() || table.getRates() == null) {
-            throw new InvalidCurrencyExchangeTableException("Tasas de cambio no validas.");
+        if (table.getUsdRate()< 0) {
+            throw new InvalidCurrencyExchangeTableException("Tasas de cambio USD no valida.");
         }
         if (table.getUsernameCreator().isEmpty() || table.getUsernameCreator() == null) {
             throw new InvalidCurrencyExchangeTableException("Usuario no valido.");
